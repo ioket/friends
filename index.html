@@ -12,45 +12,21 @@
             padding: 0;
             font-family: 'Space Mono', monospace;
         }
-        
         body {
             background-color: #fffdf5;
             color: #333;
-            padding-top: 100px;
+            padding-top: 120px;
             overflow-x: hidden;
-            
-            /* Custom scrollbar */
-            --sb-track-color: #e6e6e6;
-            --sb-thumb-color: #4964bb;
-            --sb-size: 6px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
         }
-
-        body::-webkit-scrollbar {
-            width: var(--sb-size)
-        }
-
-        body::-webkit-scrollbar-track {
-            background: var(--sb-track-color);
-            border-radius: 2px;
-        }
-
-        body::-webkit-scrollbar-thumb {
-            background: var(--sb-thumb-color);
-            border-radius: 2px;
-        }
-
-        @supports not selector(::-webkit-scrollbar) {
-            body {
-                scrollbar-color: var(--sb-thumb-color)
-                                var(--sb-track-color);
-            }
-        }
-        
         .header {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100%;
+            width: 100vw;
             height: 100px;
             background-color: #fffdf5;
             z-index: 100;
@@ -60,7 +36,6 @@
             border-bottom: 1px solid #eee;
             animation: gentleFadeIn 0.8s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
         }
-        
         .header img {
             height: 60px;
             max-width: 80%;
@@ -68,48 +43,27 @@
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             will-change: transform;
         }
-        
         .header img:hover {
             transform: scale(1.08) rotate(-2deg);
         }
-
-        /* Filter Menu */
+        .main-content {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
         .filter-container {
-            position: fixed;
-            left: 20px;
-            top: 120px;
-            width: 160px;
+            position: static;
+            margin-bottom: 30px;
             background-color: white;
             padding: 15px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             z-index: 10;
-            max-height: calc(100vh - 140px);
+            max-height: none;
             overflow-y: auto;
             animation: gentleSlideIn 0.6s 0.1s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
-            will-change: transform, opacity;
         }
-
-        /* Scrollbar for filter menu */
-        .filter-container::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .filter-container::-webkit-scrollbar-track {
-            background: #e6e6e6;
-            border-radius: 2px;
-        }
-
-        .filter-container::-webkit-scrollbar-thumb {
-            background: #4964bb;
-            border-radius: 2px;
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        
-        .filter-container::-webkit-scrollbar-thumb:hover {
-            background: #3a52a0;
-        }
-        
         .filter-btn {
             padding: 10px 12px;
             margin-bottom: 8px;
@@ -127,7 +81,6 @@
             overflow: hidden;
             will-change: transform;
         }
-        
         .filter-btn::after {
             content: '';
             position: absolute;
@@ -138,16 +91,13 @@
             background: #4964bb;
             transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
-        
         .filter-btn:hover {
             background-color: #f5f7ff;
             transform: translateX(4px);
         }
-        
         .filter-btn:hover::after {
             width: 100%;
         }
-        
         .filter-btn.active {
             font-weight: 700;
             background-color: #4964bb;
@@ -155,20 +105,16 @@
             transform: translateX(4px) scale(1.03);
             box-shadow: 0 4px 12px rgba(73, 100, 187, 0.25);
         }
-        
         .filter-btn.active::after {
             width: 100%;
             background: white;
         }
-
-        /* Gallery Grid */
         .gallery-container {
-            margin-left: 200px;
-            padding: 20px;
-            animation: gentleFadeIn 0.6s 0.2s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
-            will-change: opacity;
+            padding: 0;
+            width: 100%;
+            display: flex;
+            justify-content: center;
         }
-        
         .gallery {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -176,8 +122,8 @@
             width: calc(100px * 6);
             perspective: 1200px;
             transform-style: preserve-3d;
+            justify-items: center;
         }
-        
         .gallery-item {
             aspect-ratio: 1/1;
             overflow: hidden;
@@ -188,12 +134,10 @@
             position: relative;
             will-change: transform, opacity;
         }
-        
         .gallery-item.visible {
             opacity: 1;
             transform: rotateY(0deg) scale(1);
         }
-        
         .gallery-item img {
             width: 100%;
             height: 100%;
@@ -203,64 +147,44 @@
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             will-change: transform;
         }
-        
         .gallery-item:hover img {
             transform: scale(1.08);
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
-        
         .gallery-item.hide {
             display: none;
             transition: none;
         }
-
-        /* Ultra-Smooth Animations */
         @keyframes gentleFadeIn {
-            from { 
-                opacity: 0;
-                transform: translateY(8px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateY(0);
-            }
+            from { opacity: 0; transform: translateY(8px);}
+            to { opacity: 1; transform: translateY(0);}
         }
-
         @keyframes gentleSlideIn {
-            from { 
-                opacity: 0;
-                transform: translateX(-12px);
-            }
-            to { 
-                opacity: 1;
-                transform: translateX(0);
-            }
+            from { opacity: 0; transform: translateX(-12px);}
+            to { opacity: 1; transform: translateX(0);}
         }
-
         /* Mobile */
         @media (max-width: 768px) {
             .filter-container {
-                position: static;
                 width: calc(100% - 40px);
-                margin: 20px auto;
+                margin: 20px auto 20px auto;
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 10px;
                 max-height: none;
                 animation: none;
             }
-            
             .gallery-container {
-                margin-left: 0;
                 width: 100%;
-                animation: none;
+                padding: 0;
             }
-            
             .gallery {
                 grid-template-columns: repeat(3, 1fr);
                 width: 100%;
             }
-
+            .main-content {
+                width: 100%;
+            }
             .filter-btn {
                 margin-bottom: 0;
             }
@@ -271,46 +195,39 @@
     <div class="header">
         <img src="https://64.media.tumblr.com/9253d214f5187c39358016c923db7c61/45952936b3a93a40-36/s2048x3072/622360d6b931e743367f8fe7a28dca5765dbdacc.png" alt="K-Pop Cube">
     </div>
-    
-    <!-- Filter Menu with Alphabetized Groups -->
-    <div class="filter-container">
-        <!-- Special categories at top -->
-        <button class="filter-btn active" data-filter="all">ALL</button>
-        
-        <!-- Alphabetized groups -->
-        <button class="filter-btn" data-filter="aespa">AESPA</button>
-        <button class="filter-btn" data-filter="boynextdoor">BOYNEXTDOOR</button>
-        <button class="filter-btn" data-filter="day6">DAY6</button>
-        <button class="filter-btn" data-filter="enhypen">ENHYPEN</button>
-        <button class="filter-btn" data-filter="fromis_9">FROMIS_9</button>
-        <button class="filter-btn" data-filter="hearts2hearts">HEARTS2HEARTS</button>
-        <button class="filter-btn" data-filter="illit">ILLIT</button>
-        <button class="filter-btn" data-filter="itzy">ITZY</button>
-        <button class="filter-btn" data-filter="izna">IZNA</button>
-        <button class="filter-btn" data-filter="katseye">KATSEYE</button>
-        <button class="filter-btn" data-filter="nct">NCT</button>
-        <button class="filter-btn" data-filter="njz">NJZ</button>
-        <button class="filter-btn" data-filter="nmixx">NMIXX</button>
-        <button class="filter-btn" data-filter="nona">NO NA</button>
-        <button class="filter-btn" data-filter="p1harmony">P1HARMONY</button>
-        <button class="filter-btn" data-filter="riize">RIIZE</button>
-        <button class="filter-btn" data-filter="seventeen">SEVENTEEN</button>
-        <button class="filter-btn" data-filter="straykids">STRAY KIDS</button>
-        <button class="filter-btn" data-filter="stayc">STAYC</button>
-        <button class="filter-btn" data-filter="theboyz">THE BOYZ</button>
-        <button class="filter-btn" data-filter="tws">TWS</button>
-        <button class="filter-btn" data-filter="ive">IVE</button>
-        <button class="filter-btn" data-filter="xdinaryheroes">XDINARY HEROES</button>
-        <button class="filter-btn" data-filter="zerobaseone">ZEROBASEONE</button>
-        
-        <!-- Special category at bottom -->
-        <button class="filter-btn" data-filter="misc">MISC</button>
+    <div class="main-content">
+        <div class="filter-container">
+            <button class="filter-btn active" data-filter="all">ALL</button>
+            <button class="filter-btn" data-filter="aespa">AESPA</button>
+            <button class="filter-btn" data-filter="boynextdoor">BOYNEXTDOOR</button>
+            <button class="filter-btn" data-filter="day6">DAY6</button>
+            <button class="filter-btn" data-filter="enhypen">ENHYPEN</button>
+            <button class="filter-btn" data-filter="fromis_9">FROMIS_9</button>
+            <button class="filter-btn" data-filter="hearts2hearts">HEARTS2HEARTS</button>
+            <button class="filter-btn" data-filter="illit">ILLIT</button>
+            <button class="filter-btn" data-filter="itzy">ITZY</button>
+            <button class="filter-btn" data-filter="izna">IZNA</button>
+            <button class="filter-btn" data-filter="katseye">KATSEYE</button>
+            <button class="filter-btn" data-filter="nct">NCT</button>
+            <button class="filter-btn" data-filter="njz">NJZ</button>
+            <button class="filter-btn" data-filter="nmixx">NMIXX</button>
+            <button class="filter-btn" data-filter="nona">NO NA</button>
+            <button class="filter-btn" data-filter="p1harmony">P1HARMONY</button>
+            <button class="filter-btn" data-filter="riize">RIIZE</button>
+            <button class="filter-btn" data-filter="seventeen">SEVENTEEN</button>
+            <button class="filter-btn" data-filter="straykids">STRAY KIDS</button>
+            <button class="filter-btn" data-filter="stayc">STAYC</button>
+            <button class="filter-btn" data-filter="theboyz">THE BOYZ</button>
+            <button class="filter-btn" data-filter="tws">TWS</button>
+            <button class="filter-btn" data-filter="ive">IVE</button>
+            <button class="filter-btn" data-filter="xdinaryheroes">XDINARY HEROES</button>
+            <button class="filter-btn" data-filter="zerobaseone">ZEROBASEONE</button>
+            <button class="filter-btn" data-filter="misc">MISC</button>
+        </div>
+        <div class="gallery-container">
+            <div class="gallery" id="gallery"></div>
+        </div>
     </div>
-    
-    <div class="gallery-container">
-        <div class="gallery" id="gallery"></div>
-    </div>
-
     <script>
         // Updated member data with all members from your masterlist
         const members = [
@@ -322,41 +239,41 @@
             { id: 3, name: 'Haewon', group: 'nmixx', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Haewon' },
             
             // BOYNEXTDOOR
-            { id: 4, name: 'Leehan', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Leehan' },
-            { id: 5, name: 'Taesan', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Taesan' },
-            { id: 6, name: 'Myungjae', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Myungjae' },
-            { id: 7, name: 'Woonhak', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Woonhak' },
-            { id: 8, name: 'Sungho', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Sungho' },
+            { id: 4, name: 'Leehan', group: 'boynextdoor', image: 'https://64.media.tumblr.com/633680a5f96653dfb19c3aa9a474f918/546eb37ca1810e75-0f/s1280x1920/d6af673ea7296ca9947388e6fd553cfc4a562493.png?text=Leehan' },
+            { id: 5, name: 'Taesan', group: 'boynextdoor', image: 'https://64.media.tumblr.com/158efcac70dc90a8c70175aefc55e151/546eb37ca1810e75-68/s1280x1920/b2868370a8de948c8b66adb084c1141612552429.png?text=Taesan' },
+            { id: 6, name: 'Myungjae', group: 'boynextdoor', image: 'https://64.media.tumblr.com/68ec6a9c336cc7158741d77b3ea890fd/546eb37ca1810e75-f3/s1280x1920/19fe12435e9b778b852a21d7735d5519d5eabc34.png?text=Myungjae' },
+            { id: 7, name: 'Woonhak', group: 'boynextdoor', image: 'https://64.media.tumblr.com/b54105f73b1c49e9743eb686425b7388/546eb37ca1810e75-71/s1280x1920/404d81a5655d30c41829add5630c5a4d1c43a768.png?text=Woonhak' },
+            { id: 8, name: 'Sungho', group: 'boynextdoor', image: 'https://64.media.tumblr.com/8223be0e2ac556b5e38b3002b50cb872/546eb37ca1810e75-b6/s1280x1920/9851887f81dea741858a2b1db23972de630e70d5.png?text=Sungho' },
             
             // AESPA
-            { id: 9, name: 'Karina', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Karina' },
-            { id: 10, name: 'Giselle', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Giselle' },
-            { id: 11, name: 'Winter', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Winter' },
-            { id: 12, name: 'Ningning', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Ningning' },
+            { id: 9, name: 'Karina', group: 'aespa', image: 'https://64.media.tumblr.com/3ea45cf994488ad047a4981eed402345/546eb37ca1810e75-bb/s1280x1920/500c6160727207d45e6f3007aabddf988d12cee0.png?text=Karina' },
+            { id: 10, name: 'Giselle', group: 'aespa', image: 'https://64.media.tumblr.com/2431aa05b4eebd772d6b353aed4c2966/546eb37ca1810e75-b2/s1280x1920/44272f30d370988f64193de2f5f74c85f698de22.png?text=Giselle' },
+            { id: 11, name: 'Winter', group: 'aespa', image: 'https://64.media.tumblr.com/4c2a7ce33f0bda69be427faf7cc88564/546eb37ca1810e75-84/s1280x1920/52621992a47fbdaeeaefa63b4855996a1639a211.png?text=Winter' },
+            { id: 12, name: 'Ningning', group: 'aespa', image: 'https://64.media.tumblr.com/515df12da80394cc6c762af6d59bff30/546eb37ca1810e75-67/s1280x1920/e97eedb8753b40dd93e43cf9a866ec00981dd4ea.png?text=Ningning' },
             
             // ZEROBASEONE
-            { id: 13, name: 'Jiwoong', group: 'zerobaseone', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Jiwoong' },
-            { id: 14, name: 'Matthew', group: 'zerobaseone', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Matthew' },
-            { id: 15, name: 'Gunwook', group: 'zerobaseone', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Gunwook' },
+            { id: 13, name: 'Jiwoong', group: 'zerobaseone', image: 'https://64.media.tumblr.com/8cdab2836a3cf0f0d7b17d7f18823b1d/546eb37ca1810e75-db/s1280x1920/32c2435bf57faeb467da4c26fe69b80657eacbac.png?text=Jiwoong' },
+            { id: 14, name: 'Matthew', group: 'zerobaseone', image: 'https://64.media.tumblr.com/4105605731bc50efae061832f8ac2fdc/546eb37ca1810e75-84/s1280x1920/9f4bea71d8883c740313d41d7733082211ce9617.png?text=Matthew' },
+            { id: 15, name: 'Gunwook', group: 'zerobaseone', image: 'https://64.media.tumblr.com/560047bef67d3cef5b00b52ff84f2806/546eb37ca1810e75-92/s1280x1920/bcce27e7ab5cd1b558f25e2957394b0d01cf0788.png?text=Gunwook' },
             
             // XDINARY HEROES
-            { id: 16, name: 'Gunil', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Gunil' },
-            { id: 17, name: 'Gaon', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Gaon' },
-            { id: 18, name: 'Junhan', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Junhan' },
-            { id: 19, name: 'O.de', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=O.de' },
-            { id: 20, name: 'Jooyeon', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Jooyeon' },
+            { id: 16, name: 'Gunil', group: 'xdinaryheroes', image: 'https://64.media.tumblr.com/0ad1ffafc747a2832ff8cfa5f67be393/546eb37ca1810e75-76/s1280x1920/1ebb96455066727982ac5e5f39767c93805a51bc.png?text=Gunil' },
+            { id: 17, name: 'Gaon', group: 'xdinaryheroes', image: 'https://64.media.tumblr.com/c59f6b85f4d9a8ccf197c23f7bf77196/546eb37ca1810e75-01/s1280x1920/a783375918ea615c7ed24ee115ef492c36acaeba.png?text=Gaon' },
+            { id: 18, name: 'Junhan', group: 'xdinaryheroes', image: 'https://64.media.tumblr.com/fb265fe3953dd959aaa4e17f78a4bf4e/546eb37ca1810e75-42/s1280x1920/1b290cd4fd5d50ec9a7e3c9b5019838502eb688c.png?text=Junhan' },
+            { id: 19, name: 'O.de', group: 'xdinaryheroes', image: 'https://64.media.tumblr.com/7fcf9b7bd2e2efe807ed45d04859c392/546eb37ca1810e75-17/s1280x1920/a345936b53f463490588a6e609d1c9209e7ac4cf.png?text=O.de' },
+            { id: 20, name: 'Jooyeon', group: 'xdinaryheroes', image: 'https://64.media.tumblr.com/9814d06ef33d9855456d7bba14f7d21e/546eb37ca1810e75-20/s1280x1920/e67453941c0355ef7420f48c97815b6595b5dab1.png?text=Jooyeon' },
             
             // P1HARMONY
             { id: 21, name: 'Intak', group: 'p1harmony', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Intak' },
             { id: 22, name: 'Keeho', group: 'p1harmony', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Keeho' },
             
             // RIIZE
-            { id: 23, name: 'Shotaro', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Shotaro' },
-            { id: 24, name: 'Sungchan', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Sungchan' },
-            { id: 25, name: 'Eunseok', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Eunseok' },
-            { id: 26, name: 'Wonbin', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Wonbin' },
-            { id: 27, name: 'Anton', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Anton' },
-            { id: 28, name: 'Sohee', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Sohee' },
+            { id: 23, name: 'Shotaro', group: 'riize', image: 'https://64.media.tumblr.com/7af2db3ade400f989f11db56921fb9ea/546eb37ca1810e75-d4/s1280x1920/653370c22d26bde7a861e939442b815d1aef87fc.png?text=Shotaro' },
+            { id: 24, name: 'Sungchan', group: 'riize', image: 'https://64.media.tumblr.com/c5e5599be64830636783290624c8598b/546eb37ca1810e75-e3/s1280x1920/6b7e862e8e00edebdd51c160d4d5ca4e050b4391.png?text=Sungchan' },
+            { id: 25, name: 'Eunseok', group: 'riize', image: 'https://64.media.tumblr.com/b78ba15c0f85a8fc1b8436f408e9d272/546eb37ca1810e75-f5/s1280x1920/3524b7d7d50a5a2ef3a9217a010861471e73ddf8.png?text=Eunseok' },
+            { id: 26, name: 'Wonbin', group: 'riize', image: 'https://64.media.tumblr.com/331b753378a8fcb3449a084fcfa7cd24/546eb37ca1810e75-e7/s1280x1920/1f6dd5415b2a11e6c49b8f07996a4197a55d96f5.png?text=Wonbin' },
+            { id: 27, name: 'Anton', group: 'riize', image: 'https://64.media.tumblr.com/9ef6f742fd45e48e72471694c6fbd04d/546eb37ca1810e75-a0/s1280x1920/b53b611a0d911046509e3f259e631ac6af007a50.png?text=Anton' },
+            { id: 28, name: 'Sohee', group: 'riize', image: 'https://64.media.tumblr.com/51463278659548fb50b2ab0983b68bd3/546eb37ca1810e75-86/s1280x1920/5b48d2cfd8b0f3d19a372019449d6c9bb4de4683.png?text=Sohee' },
             
             // NO NA
             { id: 29, name: 'Baila', group: 'nona', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Baila' },
