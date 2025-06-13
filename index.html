@@ -12,21 +12,19 @@
             padding: 0;
             font-family: 'Space Mono', monospace;
         }
+        
         body {
             background-color: #fffdf5;
             color: #333;
-            padding-top: 120px;
+            padding-top: 100px;
             overflow-x: hidden;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
         }
+        
         .header {
             position: fixed;
             top: 0;
             left: 0;
-            width: 100vw;
+            width: 100%;
             height: 100px;
             background-color: #fffdf5;
             z-index: 100;
@@ -36,6 +34,7 @@
             border-bottom: 1px solid #eee;
             animation: gentleFadeIn 0.8s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
         }
+        
         .header img {
             height: 60px;
             max-width: 80%;
@@ -43,27 +42,28 @@
             transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             will-change: transform;
         }
+        
         .header img:hover {
             transform: scale(1.08) rotate(-2deg);
         }
-        .main-content {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            width: 100%;
-        }
+
+        /* Filter Menu */
         .filter-container {
-            position: static;
-            margin-bottom: 30px;
+            position: fixed;
+            left: 20px;
+            top: 120px;
+            width: 160px;
             background-color: white;
             padding: 15px;
             border-radius: 12px;
             box-shadow: 0 4px 20px rgba(0,0,0,0.08);
             z-index: 10;
-            max-height: none;
+            max-height: calc(100vh - 140px);
             overflow-y: auto;
             animation: gentleSlideIn 0.6s 0.1s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
+            will-change: transform, opacity;
         }
+        
         .filter-btn {
             padding: 10px 12px;
             margin-bottom: 8px;
@@ -81,6 +81,7 @@
             overflow: hidden;
             will-change: transform;
         }
+        
         .filter-btn::after {
             content: '';
             position: absolute;
@@ -91,13 +92,16 @@
             background: #4964bb;
             transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
+        
         .filter-btn:hover {
             background-color: #f5f7ff;
             transform: translateX(4px);
         }
+        
         .filter-btn:hover::after {
             width: 100%;
         }
+        
         .filter-btn.active {
             font-weight: 700;
             background-color: #4964bb;
@@ -105,16 +109,20 @@
             transform: translateX(4px) scale(1.03);
             box-shadow: 0 4px 12px rgba(73, 100, 187, 0.25);
         }
+        
         .filter-btn.active::after {
             width: 100%;
             background: white;
         }
+
+        /* Gallery Grid */
         .gallery-container {
-            padding: 0;
-            width: 100%;
-            display: flex;
-            justify-content: center;
+            margin-left: 200px;
+            padding: 20px;
+            animation: gentleFadeIn 0.6s 0.2s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
+            will-change: opacity;
         }
+        
         .gallery {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -122,8 +130,8 @@
             width: calc(100px * 6);
             perspective: 1200px;
             transform-style: preserve-3d;
-            justify-items: center;
         }
+        
         .gallery-item {
             aspect-ratio: 1/1;
             overflow: hidden;
@@ -134,10 +142,12 @@
             position: relative;
             will-change: transform, opacity;
         }
+        
         .gallery-item.visible {
             opacity: 1;
             transform: rotateY(0deg) scale(1);
         }
+        
         .gallery-item img {
             width: 100%;
             height: 100%;
@@ -147,44 +157,63 @@
             transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
             will-change: transform;
         }
+        
         .gallery-item:hover img {
             transform: scale(1.08);
             box-shadow: 0 8px 20px rgba(0,0,0,0.12);
         }
+        
         .gallery-item.hide {
             display: none;
             transition: none;
         }
+
         @keyframes gentleFadeIn {
-            from { opacity: 0; transform: translateY(8px);}
-            to { opacity: 1; transform: translateY(0);}
+            from { 
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
+
         @keyframes gentleSlideIn {
-            from { opacity: 0; transform: translateX(-12px);}
-            to { opacity: 1; transform: translateX(0);}
+            from { 
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
         }
+
         /* Mobile */
         @media (max-width: 768px) {
             .filter-container {
+                position: static;
                 width: calc(100% - 40px);
-                margin: 20px auto 20px auto;
+                margin: 20px auto;
                 display: grid;
                 grid-template-columns: repeat(3, 1fr);
                 gap: 10px;
                 max-height: none;
                 animation: none;
             }
+            
             .gallery-container {
+                margin-left: 0;
                 width: 100%;
-                padding: 0;
+                animation: none;
             }
+            
             .gallery {
                 grid-template-columns: repeat(3, 1fr);
                 width: 100%;
             }
-            .main-content {
-                width: 100%;
-            }
+
             .filter-btn {
                 margin-bottom: 0;
             }
@@ -195,39 +224,41 @@
     <div class="header">
         <img src="https://64.media.tumblr.com/9253d214f5187c39358016c923db7c61/45952936b3a93a40-36/s2048x3072/622360d6b931e743367f8fe7a28dca5765dbdacc.png" alt="K-Pop Cube">
     </div>
-    <div class="main-content">
-        <div class="filter-container">
-            <button class="filter-btn active" data-filter="all">ALL</button>
-            <button class="filter-btn" data-filter="aespa">AESPA</button>
-            <button class="filter-btn" data-filter="boynextdoor">BOYNEXTDOOR</button>
-            <button class="filter-btn" data-filter="day6">DAY6</button>
-            <button class="filter-btn" data-filter="enhypen">ENHYPEN</button>
-            <button class="filter-btn" data-filter="fromis_9">FROMIS_9</button>
-            <button class="filter-btn" data-filter="hearts2hearts">HEARTS2HEARTS</button>
-            <button class="filter-btn" data-filter="illit">ILLIT</button>
-            <button class="filter-btn" data-filter="itzy">ITZY</button>
-            <button class="filter-btn" data-filter="izna">IZNA</button>
-            <button class="filter-btn" data-filter="katseye">KATSEYE</button>
-            <button class="filter-btn" data-filter="nct">NCT</button>
-            <button class="filter-btn" data-filter="njz">NJZ</button>
-            <button class="filter-btn" data-filter="nmixx">NMIXX</button>
-            <button class="filter-btn" data-filter="nona">NO NA</button>
-            <button class="filter-btn" data-filter="p1harmony">P1HARMONY</button>
-            <button class="filter-btn" data-filter="riize">RIIZE</button>
-            <button class="filter-btn" data-filter="seventeen">SEVENTEEN</button>
-            <button class="filter-btn" data-filter="straykids">STRAY KIDS</button>
-            <button class="filter-btn" data-filter="stayc">STAYC</button>
-            <button class="filter-btn" data-filter="theboyz">THE BOYZ</button>
-            <button class="filter-btn" data-filter="tws">TWS</button>
-            <button class="filter-btn" data-filter="ive">IVE</button>
-            <button class="filter-btn" data-filter="xdinaryheroes">XDINARY HEROES</button>
-            <button class="filter-btn" data-filter="zerobaseone">ZEROBASEONE</button>
-            <button class="filter-btn" data-filter="misc">MISC</button>
-        </div>
-        <div class="gallery-container">
-            <div class="gallery" id="gallery"></div>
-        </div>
+    
+    <!-- Filter Menu -->
+    <div class="filter-container">
+        <button class="filter-btn active" data-filter="all">ALL</button>
+        <button class="filter-btn" data-filter="aespa">AESPA</button>
+        <button class="filter-btn" data-filter="boynextdoor">BOYNEXTDOOR</button>
+        <button class="filter-btn" data-filter="day6">DAY6</button>
+        <button class="filter-btn" data-filter="enhypen">ENHYPEN</button>
+        <button class="filter-btn" data-filter="fromis_9">FROMIS_9</button>
+        <button class="filter-btn" data-filter="hearts2hearts">HEARTS2HEARTS</button>
+        <button class="filter-btn" data-filter="illit">ILLIT</button>
+        <button class="filter-btn" data-filter="itzy">ITZY</button>
+        <button class="filter-btn" data-filter="izna">IZNA</button>
+        <button class="filter-btn" data-filter="katseye">KATSEYE</button>
+        <button class="filter-btn" data-filter="nct">NCT</button>
+        <button class="filter-btn" data-filter="njz">NJZ</button>
+        <button class="filter-btn" data-filter="nmixx">NMIXX</button>
+        <button class="filter-btn" data-filter="nona">NO NA</button>
+        <button class="filter-btn" data-filter="p1harmony">P1HARMONY</button>
+        <button class="filter-btn" data-filter="riize">RIIZE</button>
+        <button class="filter-btn" data-filter="seventeen">SEVENTEEN</button>
+        <button class="filter-btn" data-filter="straykids">STRAY KIDS</button>
+        <button class="filter-btn" data-filter="stayc">STAYC</button>
+        <button class="filter-btn" data-filter="theboyz">THE BOYZ</button>
+        <button class="filter-btn" data-filter="tws">TWS</button>
+        <button class="filter-btn" data-filter="ive">IVE</button>
+        <button class="filter-btn" data-filter="xdinaryheroes">XDINARY HEROES</button>
+        <button class="filter-btn" data-filter="zerobaseone">ZEROBASEONE</button>
+        <button class="filter-btn" data-filter="misc">MISC</button>
     </div>
+    
+    <div class="gallery-container">
+        <div class="gallery" id="gallery"></div>
+    </div>
+
     <script>
         // Updated member data with all members from your masterlist
         const members = [
@@ -299,10 +330,10 @@
             { id: 37, name: 'Minji', group: 'njz', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Minji' },
             
             // IVE
-            { id: 38, name: 'Yujin', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Yujin' },
-            { id: 39, name: 'Wonyoung', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Wonyoung' },
-            { id: 40, name: 'Rei', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Rei' },
-            { id: 41, name: 'Liz', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Liz' },
+            { id: 38, name: 'Yujin', group: 'ive', image: 'https://64.media.tumblr.com/7bf85a1b5d3957d5c55eff631d007e26/96bf7e0341b35da6-13/s1280x1920/64573b767d754516fa29bf2c7feb7d4cb669b1f5.png?text=Yujin' },
+            { id: 39, name: 'Wonyoung', group: 'ive', image: 'https://64.media.tumblr.com/5aef0061280138b88f3d8258220256dc/96bf7e0341b35da6-80/s1280x1920/abdf61e6d9df3cc7b146dbc6679c1c3a9c181a66.png?text=Wonyoung' },
+            { id: 40, name: 'Rei', group: 'ive', image: 'https://64.media.tumblr.com/aee3d3e3b86f7b7c178588758e27adc3/96bf7e0341b35da6-2f/s1280x1920/81423ffbcb43c52fd3e954d82f1988e6a78aa7a9.png?text=Rei' },
+            { id: 41, name: 'Liz', group: 'ive', image: 'https://64.media.tumblr.com/6ae401577fbd82143f35f344e2f905df/96bf7e0341b35da6-ec/s1280x1920/dcfd45533fa55f82954cb50e42c30a824fffcebf.pnj?text=Liz' },
             
             // NCT
             { id: 42, name: 'Mark', group: 'nct', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Mark' },
