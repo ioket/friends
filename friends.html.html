@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>K-Pop Faceclaim Cube</title>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Space Mono', monospace;
+        }
+        
+        body {
+            background-color: #fffdf5;
+            color: #333;
+            padding-top: 100px;
+            overflow-x: hidden;
+            
+            /* Custom scrollbar */
+            --sb-track-color: #e6e6e6;
+            --sb-thumb-color: #4964bb;
+            --sb-size: 6px;
+        }
+
+        body::-webkit-scrollbar {
+            width: var(--sb-size)
+        }
+
+        body::-webkit-scrollbar-track {
+            background: var(--sb-track-color);
+            border-radius: 2px;
+        }
+
+        body::-webkit-scrollbar-thumb {
+            background: var(--sb-thumb-color);
+            border-radius: 2px;
+        }
+
+        @supports not selector(::-webkit-scrollbar) {
+            body {
+                scrollbar-color: var(--sb-thumb-color)
+                                var(--sb-track-color);
+            }
+        }
+        
+        .header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100px;
+            background-color: #fffdf5;
+            z-index: 100;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-bottom: 1px solid #eee;
+            animation: gentleFadeIn 0.8s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
+        }
+        
+        .header img {
+            height: 60px;
+            max-width: 80%;
+            object-fit: contain;
+            transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform;
+        }
+        
+        .header img:hover {
+            transform: scale(1.08) rotate(-2deg);
+        }
+
+        /* Filter Menu */
+        .filter-container {
+            position: fixed;
+            left: 20px;
+            top: 120px;
+            width: 160px;
+            background-color: white;
+            padding: 15px;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            z-index: 10;
+            max-height: calc(100vh - 140px);
+            overflow-y: auto;
+            animation: gentleSlideIn 0.6s 0.1s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
+            will-change: transform, opacity;
+        }
+
+        /* Scrollbar for filter menu */
+        .filter-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .filter-container::-webkit-scrollbar-track {
+            background: #e6e6e6;
+            border-radius: 2px;
+        }
+
+        .filter-container::-webkit-scrollbar-thumb {
+            background: #4964bb;
+            border-radius: 2px;
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .filter-container::-webkit-scrollbar-thumb:hover {
+            background: #3a52a0;
+        }
+        
+        .filter-btn {
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            background-color: white;
+            border: none;
+            border-radius: 8px;
+            color: #4964bb;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            text-align: left;
+            font-size: 13px;
+            width: 100%;
+            display: block;
+            position: relative;
+            overflow: hidden;
+            will-change: transform;
+        }
+        
+        .filter-btn::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #4964bb;
+            transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .filter-btn:hover {
+            background-color: #f5f7ff;
+            transform: translateX(4px);
+        }
+        
+        .filter-btn:hover::after {
+            width: 100%;
+        }
+        
+        .filter-btn.active {
+            font-weight: 700;
+            background-color: #4964bb;
+            color: white;
+            transform: translateX(4px) scale(1.03);
+            box-shadow: 0 4px 12px rgba(73, 100, 187, 0.25);
+        }
+        
+        .filter-btn.active::after {
+            width: 100%;
+            background: white;
+        }
+
+        /* Gallery Grid */
+        .gallery-container {
+            margin-left: 200px;
+            padding: 20px;
+            animation: gentleFadeIn 0.6s 0.2s cubic-bezier(0.16, 0.89, 0.32, 1.1) both;
+            will-change: opacity;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 0;
+            width: calc(100px * 6);
+            perspective: 1200px;
+            transform-style: preserve-3d;
+        }
+        
+        .gallery-item {
+            aspect-ratio: 1/1;
+            overflow: hidden;
+            opacity: 0;
+            transform: rotateY(90deg) scale(0.85);
+            transition: all 0.7s cubic-bezier(0.34, 1.56, 0.64, 1);
+            transform-style: preserve-3d;
+            position: relative;
+            will-change: transform, opacity;
+        }
+        
+        .gallery-item.visible {
+            opacity: 1;
+            transform: rotateY(0deg) scale(1);
+        }
+        
+        .gallery-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.5s cubic-bezier(0.34, 1.56, 0.64, 1);
+            will-change: transform;
+        }
+        
+        .gallery-item:hover img {
+            transform: scale(1.08);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+        }
+        
+        .gallery-item.hide {
+            display: none;
+            transition: none;
+        }
+
+        /* Ultra-Smooth Animations */
+        @keyframes gentleFadeIn {
+            from { 
+                opacity: 0;
+                transform: translateY(8px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gentleSlideIn {
+            from { 
+                opacity: 0;
+                transform: translateX(-12px);
+            }
+            to { 
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Mobile */
+        @media (max-width: 768px) {
+            .filter-container {
+                position: static;
+                width: calc(100% - 40px);
+                margin: 20px auto;
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 10px;
+                max-height: none;
+                animation: none;
+            }
+            
+            .gallery-container {
+                margin-left: 0;
+                width: 100%;
+                animation: none;
+            }
+            
+            .gallery {
+                grid-template-columns: repeat(3, 1fr);
+                width: 100%;
+            }
+
+            .filter-btn {
+                margin-bottom: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <img src="https://64.media.tumblr.com/9253d214f5187c39358016c923db7c61/45952936b3a93a40-36/s2048x3072/622360d6b931e743367f8fe7a28dca5765dbdacc.png" alt="K-Pop Cube">
+    </div>
+    
+    <!-- Filter Menu with Alphabetized Groups -->
+    <div class="filter-container">
+        <!-- Special categories at top -->
+        <button class="filter-btn active" data-filter="all">ALL</button>
+        
+        <!-- Alphabetized groups -->
+        <button class="filter-btn" data-filter="aespa">AESPA</button>
+        <button class="filter-btn" data-filter="boynextdoor">BOYNEXTDOOR</button>
+        <button class="filter-btn" data-filter="day6">DAY6</button>
+        <button class="filter-btn" data-filter="enhypen">ENHYPEN</button>
+        <button class="filter-btn" data-filter="fromis_9">FROMIS_9</button>
+        <button class="filter-btn" data-filter="hearts2hearts">HEARTS2HEARTS</button>
+        <button class="filter-btn" data-filter="illit">ILLIT</button>
+        <button class="filter-btn" data-filter="itzy">ITZY</button>
+        <button class="filter-btn" data-filter="izna">IZNA</button>
+        <button class="filter-btn" data-filter="katseye">KATSEYE</button>
+        <button class="filter-btn" data-filter="nct">NCT</button>
+        <button class="filter-btn" data-filter="njz">NJZ</button>
+        <button class="filter-btn" data-filter="nmixx">NMIXX</button>
+        <button class="filter-btn" data-filter="nona">NO NA</button>
+        <button class="filter-btn" data-filter="p1harmony">P1HARMONY</button>
+        <button class="filter-btn" data-filter="riize">RIIZE</button>
+        <button class="filter-btn" data-filter="seventeen">SEVENTEEN</button>
+        <button class="filter-btn" data-filter="straykids">STRAY KIDS</button>
+        <button class="filter-btn" data-filter="stayc">STAYC</button>
+        <button class="filter-btn" data-filter="theboyz">THE BOYZ</button>
+        <button class="filter-btn" data-filter="tws">TWS</button>
+        <button class="filter-btn" data-filter="ive">IVE</button>
+        <button class="filter-btn" data-filter="xdinaryheroes">XDINARY HEROES</button>
+        <button class="filter-btn" data-filter="zerobaseone">ZEROBASEONE</button>
+        
+        <!-- Special category at bottom -->
+        <button class="filter-btn" data-filter="misc">MISC</button>
+    </div>
+    
+    <div class="gallery-container">
+        <div class="gallery" id="gallery"></div>
+    </div>
+
+    <script>
+        // Updated member data with all members from your masterlist
+        const members = [
+            // ITZY
+            { id: 1, name: 'Yeji', group: 'itzy', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Yeji' },
+            { id: 2, name: 'Chaeryeong', group: 'itzy', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Chaeryeong' },
+            
+            // NMIXX
+            { id: 3, name: 'Haewon', group: 'nmixx', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Haewon' },
+            
+            // BOYNEXTDOOR
+            { id: 4, name: 'Leehan', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Leehan' },
+            { id: 5, name: 'Taesan', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Taesan' },
+            { id: 6, name: 'Myungjae', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Myungjae' },
+            { id: 7, name: 'Woonhak', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Woonhak' },
+            { id: 8, name: 'Sungho', group: 'boynextdoor', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Sungho' },
+            
+            // AESPA
+            { id: 9, name: 'Karina', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Karina' },
+            { id: 10, name: 'Giselle', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Giselle' },
+            { id: 11, name: 'Winter', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Winter' },
+            { id: 12, name: 'Ningning', group: 'aespa', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Ningning' },
+            
+            // ZEROBASEONE
+            { id: 13, name: 'Jiwoong', group: 'zerobaseone', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Jiwoong' },
+            { id: 14, name: 'Matthew', group: 'zerobaseone', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Matthew' },
+            { id: 15, name: 'Gunwook', group: 'zerobaseone', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Gunwook' },
+            
+            // XDINARY HEROES
+            { id: 16, name: 'Gunil', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Gunil' },
+            { id: 17, name: 'Gaon', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Gaon' },
+            { id: 18, name: 'Junhan', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Junhan' },
+            { id: 19, name: 'O.de', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=O.de' },
+            { id: 20, name: 'Jooyeon', group: 'xdinaryheroes', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Jooyeon' },
+            
+            // P1HARMONY
+            { id: 21, name: 'Intak', group: 'p1harmony', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Intak' },
+            { id: 22, name: 'Keeho', group: 'p1harmony', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Keeho' },
+            
+            // RIIZE
+            { id: 23, name: 'Shotaro', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Shotaro' },
+            { id: 24, name: 'Sungchan', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Sungchan' },
+            { id: 25, name: 'Eunseok', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Eunseok' },
+            { id: 26, name: 'Wonbin', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Wonbin' },
+            { id: 27, name: 'Anton', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Anton' },
+            { id: 28, name: 'Sohee', group: 'riize', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Sohee' },
+            
+            // NO NA
+            { id: 29, name: 'Baila', group: 'nona', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Baila' },
+            
+            // TWS
+            { id: 30, name: 'Shinyu', group: 'tws', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Shinyu' },
+            
+            // DAY6
+            { id: 31, name: 'Dowoon', group: 'day6', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Dowoon' },
+            
+            // THE BOYZ
+            { id: 32, name: 'Juyeon', group: 'theboyz', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Juyeon' },
+            { id: 33, name: 'Eric', group: 'theboyz', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Eric' },
+            
+            // ENHYPEN
+            { id: 34, name: 'Heeseung', group: 'enhypen', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Heeseung' },
+            { id: 35, name: 'Jungwon', group: 'enhypen', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Jungwon' },
+            
+            // STRAY KIDS
+            { id: 36, name: 'Hyunjin', group: 'straykids', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Hyunjin' },
+            
+            // NJZ
+            { id: 37, name: 'Minji', group: 'njz', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Minji' },
+            
+            // IVE
+            { id: 38, name: 'Yujin', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Yujin' },
+            { id: 39, name: 'Wonyoung', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Wonyoung' },
+            { id: 40, name: 'Rei', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Rei' },
+            { id: 41, name: 'Liz', group: 'ive', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Liz' },
+            
+            // NCT
+            { id: 42, name: 'Mark', group: 'nct', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Mark' },
+            { id: 43, name: 'Yushi', group: 'nct', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Yushi' },
+            { id: 44, name: 'Sakuya', group: 'nct', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Sakuya' },
+            
+            // IZNA
+            { id: 45, name: 'Sarang', group: 'izna', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Sarang' },
+            
+            // FROMIS_9
+            { id: 46, name: 'Nagyung', group: 'fromis_9', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Nagyung' },
+            
+            // STAYC
+            { id: 47, name: 'Seeun', group: 'stayc', image: 'https://via.placeholder.com/300/4ECDC4/ffffff?text=Seeun' },
+            
+            // SEVENTEEN
+            { id: 48, name: 'Mingyu', group: 'seventeen', image: 'https://via.placeholder.com/300/45B7D1/ffffff?text=Mingyu' },
+            
+            // HEARTS2HEARTS
+            { id: 49, name: 'Carmen', group: 'hearts2hearts', image: 'https://via.placeholder.com/300/FFBE0B/ffffff?text=Carmen' },
+            
+            // KATSEYE
+            { id: 50, name: 'Megan', group: 'katseye', image: 'https://via.placeholder.com/300/FB5607/ffffff?text=Megan' },
+            
+            // MISC
+            { id: 51, name: 'Albon', group: 'misc', image: 'https://via.placeholder.com/300/8338EC/ffffff?text=Albon' },
+            
+            // ILLIT
+            { id: 52, name: 'Minju', group: 'illit', image: 'https://via.placeholder.com/300/FF6B6B/ffffff?text=Minju' }
+        ];
+
+        // Build Gallery with Ultra-Smooth Shuffle Animation
+        const gallery = document.getElementById('gallery');
+        
+        // Shuffle members
+        const shuffled = [...members].sort(() => Math.random() - 0.5);
+        
+        shuffled.forEach((member, index) => {
+            const item = document.createElement('div');
+            item.className = `gallery-item ${member.group}`;
+            item.dataset.group = member.group;
+            item.innerHTML = `<img src="${member.image}" alt="${member.name}">`;
+            gallery.appendChild(item);
+            
+            // Smoother staggered animation with wave effect
+            const row = Math.floor(index / 6);
+            const col = index % 6;
+            const delay = row * 60 + col * 40;
+            
+            setTimeout(() => {
+                item.classList.add('visible');
+            }, 300 + delay);
+        });
+
+        // Ultra-Smooth Filter Functionality
+        const filterButtons = document.querySelectorAll('.filter-btn');
+        
+        filterButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                // Smoother button micro-interaction
+                button.style.transform = 'translateX(4px) scale(0.98)';
+                setTimeout(() => {
+                    button.style.transform = 'translateX(4px) scale(1.03)';
+                }, 100);
+                
+                // Update active button
+                filterButtons.forEach(btn => {
+                    btn.classList.remove('active');
+                    btn.style.transform = '';
+                });
+                button.classList.add('active');
+                
+                const filterValue = button.dataset.filter;
+                const items = document.querySelectorAll('.gallery-item');
+                
+                // Smoother filtering with optimized delays
+                items.forEach((item, i) => {
+                    const show = filterValue === 'all' || item.dataset.group === filterValue;
+                    const delay = i * 10;
+                    
+                    setTimeout(() => {
+                        if (show) {
+                            item.style.display = 'block';
+                            setTimeout(() => {
+                                item.classList.add('visible');
+                            }, 30);
+                        } else {
+                            item.classList.remove('visible');
+                            setTimeout(() => {
+                                item.style.display = 'none';
+                            }, 400);
+                        }
+                    }, delay);
+                });
+            });
+        });
+    </script>
+</body>
+</html>
